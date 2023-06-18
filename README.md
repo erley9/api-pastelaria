@@ -23,6 +23,7 @@ php artisan key:generate
 
 copie o arquivo .env.example e prencha os campos
 
+```sh
 DB_CONNECTION=mysql
 DB_HOST=db
 DB_PORT=3306
@@ -42,6 +43,8 @@ MAIL_FROM_ADDRESS="seu email"
 REDIS_HOST=127.0.0.1
 REDIS_PASSWORD=null
 REDIS_PORT=6379
+
+```
 
 crie um env.testing com as mesmas informações acima, só mude o campo DB_DATABASE=laravel para DB_DATABASE=laraveltestes
 
