@@ -78,21 +78,25 @@ POST http://localhost:8989/api/register
 
 com as seguintes informações 
 
+```sh
 {
     "name":"seu nome",
     "email":"seu email",
     "password":"sua senha"
 }
+```
 
 Depois faça o login na rota
 
 POST http://localhost:8989/api/login
 
+```sh
 {
     "email":"seu e-mail",
     "password":"sua senha",
     "device_name":"pc"
 }
+```
 
 Vai ser gerado um token para ser utilizado nas rotas autenticadas
 
