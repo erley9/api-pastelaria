@@ -108,4 +108,4 @@ Segue o exemplo no postman
 
 Na raiz do projeto existe um arquivo api-pastelaria.postman_collection.json para ser importado no postman com todas as rotas
 
-Obs: na rota post e put de produts utilizar form em vez de json pois a api faz envio de arquivo.
+Obs: na rota post e put de products utilizar form em vez de json pois a api faz envio de arquivo.
