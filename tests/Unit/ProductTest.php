@@ -1,51 +1,82 @@
 <?php
 
 namespace Tests\Unit;
-
+use App\Models\Product;
 use App\Models\User;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class ProductTest extends TestCase
 {
-    public function testCreateProduct()
+    use RefreshDatabase;
+
+    public function testListAllProducts()
     {
-        $data = [
-                    'name' => "New Product",
-                    'description' => "This is a product",
-                    'units' => 20,
-                    'price' => 10,
-                    'image' => "https://images.pexels.com/photos/1000084/pexels-photo-1000084.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
-                ];
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user, 'api')->json('POST', '/api/products/store',$data);
+        Product::factory()->count(20)->create();
+
+        $response = $this->actingAs($user)->json('GET', '/api/product');
+
+        $response->assertOk();
+        $response->assertJsonCount(20, 'products');
+        $response->assertJson(['status' => true]);
+        $response->assertJson(['message' => "Successfully"]);
+    }
+
+    public function testCreateProduct()
+    {
+        $user = User::factory()->create();
+
+        $data = [
+                    'name' => "New Product",
+                    'price' => '15.00',
+                    'photo' => UploadedFile::fake()->image('photo1.png'),
+                ];
+
+        $response = $this->actingAs($user)->json('POST', '/api/product',$data);
 
         $response->assertStatus(200);
         $response->assertJson(['status' => true]);
-        $response->assertJson(['message' => "Product Created!"]);
-        $response->assertJson(['data' => $data]);
+        $response->assertJson(['message' => "Product Created Successfully"]);
+        $response->assertJson(['status' => true]);
+        $response->assertJsonPath('product.name',$data["name"]);
+        $response->assertJsonPath('product.price',$data["price"]);
+        $this->assertDatabaseCount('products', 1);
     }
 
-    // public function testGettingAllProducts()
-    // {
-    //     $response = $this->json('GET', '/api/products');
-    //     $response->assertStatus(200);
 
-    //     $response->assertJsonStructure(
-    //         [
-    //             [
-    //                     'id',
-    //                     'name',
-    //                     'description',
-    //                     'units',
-    //                     'price',
-    //                     'image',
-    //                     'created_at',
-    //                     'updated_at'
-    //             ]
-    //         ]
-    //     );
-    // }
+    public function testUpdateProduct()
+    {
+        $user = User::factory()->create();
+
+        $produto = Product::find(1);
+
+        dd($produto);
+
+         $data = [
+            'name' => "New Product2",
+            'price' => '16.00',
+            'photo' => UploadedFile::fake()->image('photo2.png'),
+            '_method' => 'put'
+         ];
+
+        $response = $this->actingAs($user)->put('/api/product/1',$data);
+
+        $response->assertStatus(200);
+        $response->assertJson(['status' => true]);
+        $response->assertJson(['message' => "Update Product Successfully"]);
+        $response->assertJson(['status' => true]);
+        $response->assertJsonPath('product.name',$data["name"]);
+        $response->assertJsonPath('product.price',$data["price"]);
+
+    }
+
+
+
+
 
     // public function testUpdateProduct()
     // {

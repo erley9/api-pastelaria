@@ -1,6 +1,5 @@
 FROM php:8.1-fpm
 
-# set your user name, ex: user=bernardo
 ARG user=erley
 ARG uid=1000
 
@@ -13,6 +12,14 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip
+
+RUN apt-get update && \
+    apt-get install -y \
+    libzip-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev
+
+RUN docker-php-ext-install gd
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*

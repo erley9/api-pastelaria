@@ -19,12 +19,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/login', [AuthController::class,'auth']);
+Route::post('/register', [AuthController::class, 'createUser']);
 Route::post('/logout', [AuthController::class,'logout'])->middleware('auth:sanctum');
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/client', ClientController::class);
     Route::apiResource('/product', ProductController::class);
-    Route::apiResource('/order', OrderController::class);
+    Route::apiResource('/order', OrderController::class, array('only' => array('index', 'store', 'update')));
+    Route::get('/order/{client}', [OrderController::class,'show']);
+    Route::put('/order', [OrderController::class,'update']);
+    Route::delete('/order/{client}', [OrderController::class,'destroy']);
 });
 

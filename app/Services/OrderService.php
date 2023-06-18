@@ -12,14 +12,27 @@ class OrderService
         $this->repository = $orderRepository;
     }
 
-    public function listOrder()
+    public function listOrders()
     {
-        return $this->repository->getAllProducts();
+        $result = $this->repository->getOrdersGroupForClient();
+
+        $groupForOrder = [];
+
+        $grouped = $result->groupBy('client_id')->toArray();
+
+        foreach ($grouped as $client_id => $orders) {
+            foreach ($orders as $itemOrder) {
+                $dateConverted = date("Y-m-d H:i:s", strtotime($itemOrder['created_at']));
+                $groupForOrder[$client_id][$dateConverted][] = $itemOrder;
+            }
+        }
+
+        return $groupForOrder;
     }
 
-    public function OrderForId($productId)
+    public function OrderForId($clientId)
     {
-        return $this->repository->getProduct($productId);
+        return $this->repository->getOrderTodayClient($clientId);
     }
 
     public function createOrder($request)
@@ -27,14 +40,11 @@ class OrderService
         return $this->repository->saveOrder($request);
     }
 
-    public function updateProduct($productId, $request)
-    {
-        $this->repository->changeProduct($productId, $request);
-
-        return $this->repository->getById($productId);
-    }
-
     public function removeOrder($clientId) {
         $this->repository->deleteOrder($clientId);
+    }
+
+    public function updateOrderToday($request) {
+        return $this->repository->updateOrder($request);
     }
 }

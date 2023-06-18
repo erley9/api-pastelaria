@@ -14,7 +14,7 @@ class ProductService
 
     public function uploadPhoto($request)
     {
-        $newimagem = md5(uniqid()) . '-' . time() . '.jpg';
+        $newimagem = md5(uniqid()) . '-' . time() . '.png';
         $path = $request->file('photo')->move(public_path("/photos"), $newimagem);
         $photoUrl = url('/photos/'.$newimagem);
         return $photoUrl;
