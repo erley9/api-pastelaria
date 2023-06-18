@@ -14,6 +14,7 @@ class AuthController extends Controller
     public function auth(AuthRequest $request)
     {
         $user = User::where('email', $request->email)->first();
+
         if (!$user || !Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
@@ -23,6 +24,8 @@ class AuthController extends Controller
         $token = $user->createToken($request->device_name)->plainTextToken;
 
         return response()->json([
+            'status' => true,
+            'message' => "Generated token",
             'token' => $token,
         ],200);
     }
@@ -38,7 +41,7 @@ class AuthController extends Controller
                 'password' => 'required'
             ]);
 
-            if($validateUser->fails()){
+            if ($validateUser->fails()) {
                 return response()->json([
                     'status' => false,
                     'message' => 'validation error',

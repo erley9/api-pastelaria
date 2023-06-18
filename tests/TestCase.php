@@ -8,13 +8,5 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    /*
-    protected function setUp(): void {
-        parent::setUp();
-
-        $this->artisan('migrate');
-        $this->artisan('db:seed');
-
-        $this->withoutExceptionHandling();
-    }*/
+    protected $seed = true;
 }

@@ -66,7 +66,11 @@ class ProductController extends Controller
             return response()->json($e->getMessage(),500);
         }
 
-        return response()->json($product,200);
+        return response()->json([
+            'status' => true,
+            'message' => 'Product Found Successfully',
+            'product' => $product
+        ], 200);
     }
 
     /**
@@ -88,7 +92,7 @@ class ProductController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Update Product Successfully',
-            'products' => $products->toArray()
+            'product' => $product->toArray()
         ], 200);
     }
 
@@ -108,6 +112,9 @@ class ProductController extends Controller
 
         DB::commit();
 
-        return response()->json(["Product deleted"],200);
+        return response()->json([
+            'status' => true,
+            'message' => 'Product Deleted',
+        ], 200);
     }
 }

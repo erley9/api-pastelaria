@@ -5,6 +5,7 @@ use App\Repositories\OrderRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\File;
 
+
 class OrderService
 {
     public function __construct(OrderRepository $orderRepository)
@@ -41,7 +42,20 @@ class OrderService
     }
 
     public function removeOrder($clientId) {
+        
+        if (!count($this->repository->getOrderTodayClient($clientId))) {
+            return response()->json([
+                'status' => true,
+                'message' => 'There is no order from this client today to be canceled',
+            ], 401);
+        }
+        
         $this->repository->deleteOrder($clientId);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Order Deleted',
+        ], 200);
     }
 
     public function updateOrderToday($request) {

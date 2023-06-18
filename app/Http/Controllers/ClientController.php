@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Client;
 use App\Services\ClientService;
 use App\Http\Requests\StoreCreateClient;
 use App\Http\Requests\StoreUpdateClient;
-use Illuminate\Http\Request;
 use DB;
 
 class ClientController extends Controller
@@ -24,7 +24,11 @@ class ClientController extends Controller
             return response()->json($e->getMessage(),500);
         }
 
-        return response()->json($clients,200);
+        return response()->json([
+            'status' => true,
+            'message' => 'Successfully',
+            'clients' => $clients->toArray()
+        ], 200);
     }
 
     /**
@@ -43,13 +47,17 @@ class ClientController extends Controller
 
         DB::commit();
 
-        return response()->json($client,200);
+        return response()->json([
+            'status' => true,
+            'message' => 'Client Created Successfully',
+            'client' => $client
+        ], 200);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(client $client)
+    public function show(Client $client)
     {
         try {
             $client = $this->service->clientForId($client->id);
@@ -57,7 +65,11 @@ class ClientController extends Controller
             return response()->json($e->getMessage(),500);
         }
 
-        return response()->json($client,200);
+        return response()->json([
+            'status' => true,
+            'message' => 'Client Found Successfully',
+            'client' => $client->toArray()
+        ], 200);
     }
 
     /**
@@ -76,7 +88,11 @@ class ClientController extends Controller
 
         DB::commit();
 
-        return response()->json($client,200);
+        return response()->json([
+            'status' => true,
+            'message' => 'Client Updated Successfully',
+            'client' => $client
+        ], 200);
     }
 
     /**
@@ -95,6 +111,9 @@ class ClientController extends Controller
 
         DB::commit();
 
-        return response()->json(["Client deleted"],200);
+        return response()->json([
+            'status' => true,
+            'message' => 'Client Deleted'
+        ], 200);
     }
 }

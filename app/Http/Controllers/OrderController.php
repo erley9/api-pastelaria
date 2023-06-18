@@ -16,18 +16,23 @@ class OrderController extends Controller
     {
         $this->service = $service;
     }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         try {
-            $orders = $this->service->listOrders();
+            $ordersClients = $this->service->listOrders();
         } catch(Exception $e) {
             return response()->json($e->getMessage(),500);
         }
 
-        return response()->json($orders,200);
+        return response()->json([
+            'status' => true,
+            'message' => 'Orders Found Successfully',
+            'ordersclients' => $ordersClients
+        ], 200);
     }
 
     /**
@@ -38,7 +43,7 @@ class OrderController extends Controller
         DB::beginTransaction();
 
         try {
-            $product = $this->service->createOrder($request);
+            $items = $this->service->createOrder($request);
         } catch(Exception $e) {
             DB::rollback();
             return response()->json($e->getMessage(),500);
@@ -46,7 +51,11 @@ class OrderController extends Controller
 
         DB::commit();
 
-        return response()->json($product,200);
+        return response()->json([
+            'status' => true,
+            'message' => 'Order Created Successfully',
+            'items' => $items
+        ], 200);
     }
 
     /**
@@ -55,12 +64,16 @@ class OrderController extends Controller
     public function show(Client $client)
     {
         try {
-            $order = $this->service->OrderForId($client->id);
+            $items = $this->service->OrderForId($client->id);
         } catch(Exception $e) {
             return response()->json($e->getMessage(),500);
         }
 
-        return response()->json($order,200);
+        return response()->json([
+            'status' => true,
+            'message' => 'Order Found Successfully',
+            'items' => $items
+        ], 200);
     }
 
     /**
@@ -71,7 +84,7 @@ class OrderController extends Controller
         DB::beginTransaction();
 
         try {
-            $order = $this->service->updateOrderToday($request->all());
+            $items = $this->service->updateOrderToday($request->all());
         } catch(Exception $e) {
             DB::rollback();
             return response()->json($e->getMessage(),500);
@@ -79,7 +92,11 @@ class OrderController extends Controller
 
         DB::commit();
 
-        return response()->json($order,200);
+        return response()->json([
+            'status' => true,
+            'message' => 'Update Order Successfully',
+            'items' => $items
+        ], 200);
     }
 
     /**
@@ -90,7 +107,7 @@ class OrderController extends Controller
         DB::beginTransaction();
 
         try {
-            $this->service->removeOrder($client->id);
+            $response = $this->service->removeOrder($client->id);
         } catch(Exception $e) {
             DB::rollback();
             return response()->json($e->getMessage()->message(),500);
@@ -98,6 +115,6 @@ class OrderController extends Controller
 
         DB::commit();
 
-        return response()->json(["Client deleted"],200);
+        return $response;
     }
 }
